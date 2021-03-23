@@ -34,6 +34,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
@@ -41,12 +42,12 @@ namespace API
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    opt.AddPolicy("CorsPolicy", policy => {
-                        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
-                    });
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
                 });
-
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,8 +55,11 @@ namespace API
         {
             app.UseMiddleware<ExceptionMiddleware>();     
 
+            app.UseSwaggerDocumentation();
+
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
+        
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -66,7 +70,7 @@ namespace API
 
             app.UseAuthorization();
 
-            app.UseSwaggerDocumentation();
+            
 
 
             app.UseEndpoints(endpoints =>
