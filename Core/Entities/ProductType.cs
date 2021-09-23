@@ -4,4 +4,4 @@ namespace Core.Entities
     {
         public string Name { get; set; }
     }
-}
+} 
