@@ -17,7 +17,9 @@ namespace API.Controllers {
     public class OrdersController : BaseApiController {
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
-        public OrdersController (IOrderService orderService, IMapper mapper) {
+        private readonly iGenericRepository<Order> orderrepo;
+        public OrdersController (IOrderService orderService, IMapper mapper, iGenericRepository<Order> orderrepo) {
+            this.orderrepo = orderrepo;
             _mapper = mapper;
             _orderService = orderService;
         }
@@ -40,6 +42,7 @@ namespace API.Controllers {
         public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
         {
              var email = HttpContext.User.RetrieveEmailFromPrincipal();
+             
 
              var orders = await _orderService.GetOrdersForUserAsync(email);
 
@@ -52,6 +55,13 @@ namespace API.Controllers {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
             var order = await _orderService.GetOrderByIdAsync(id, email);
+
+            if(order.DeliveryMethod == null)
+            {
+                order.DeliveryMethod.Id = 1;
+              orderrepo.Update(order);
+                
+            }
 
             var orders = await _orderService.GetOrdersForUserAsync(email);
 
