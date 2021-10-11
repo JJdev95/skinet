@@ -4,7 +4,7 @@
 
 <div class="p-4">
     <p class="font-italic mb-4">Shipping costs will be added depending on choices made during checkout</p>
-    <ul class="list-unstyled mb-4" *ngIf="(basketTotals$ | async) as totals">
+    <ul class="list-unstyled mb-4" *ngIf="order || (basketTotals$ | async) as totals">
         <li class="d-flex justify-content-between py-3 border-bottom">
             <strong class="text-muted">Order subtotal</strong>
             <strong>{{totals.subtotal | currency}}</strong>
@@ -12,7 +12,7 @@
         
         <li class="d-flex justify-content-between py-3 border-bottom">
             <strong class="text-muted">Shipping and handling</strong>
-            <strong>{{totals.shipping | currency}}</strong>
+            <strong>{{totals.shipping || totals.shippingPrice | currency}}</strong>
         </li>
 
         <li class="d-flex justify-content-between py-3 border-bottom">

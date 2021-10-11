@@ -10,6 +10,7 @@ using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace API.Controllers {
     [Authorize]
@@ -52,12 +53,17 @@ namespace API.Controllers {
 
             var order = await _orderService.GetOrderByIdAsync(id, email);
 
+            var orders = await _orderService.GetOrdersForUserAsync(email);
+
             if(order == null)
             {
                 return NotFound(new ApiResponse(404));
             }
 
-           return Ok(_mapper.Map<OrderToReturnDto>(order));
+            var orderToReturn = _mapper.Map<OrderToReturnDto>(order);
+            orderToReturn.UserOrderIndex = orders.IndexOf(order) + 1;
+
+           return Ok(orderToReturn);
         }
 
         [HttpGet("deliveryMethods")]

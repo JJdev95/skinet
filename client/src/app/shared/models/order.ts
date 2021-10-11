@@ -25,4 +25,5 @@ export interface IOrder {
     subtotal: number;
     total: number;
     status: string;
+    userOrderIndex?:number;
 }
