@@ -12,7 +12,7 @@
         
         <li class="d-flex justify-content-between py-3 border-bottom">
             <strong class="text-muted">Shipping and handling</strong>
-            <strong>{{totals.shipping || totals.shippingPrice | currency}}</strong>
+            <strong>{{totals.shipping || totals.shippingPrice || 0 | currency}}</strong>
         </li>
 
         <li class="d-flex justify-content-between py-3 border-bottom">
