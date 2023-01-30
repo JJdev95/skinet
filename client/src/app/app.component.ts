@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Component, OnInit } from '@angular/core';
-import { IPagination } from './models/pagination';
-import { IProduct } from './models/product';
+import { AccountService } from './account/account.service';
+import { BasketService } from './basket/basket.service';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +10,36 @@ import { IProduct } from './models/product';
 })
 export class AppComponent implements OnInit {
   title = 'Skinet';
-  products: IProduct[];
-  constructor(private http: HttpClient) {}
+  constructor(private basketService:BasketService, private accountService: AccountService) {}
 
-  ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/products?pageSize=50').subscribe((response: IPagination) =>{
-      this.products = response.data;
-    }, error => {
-      console.log(error);
+  ngOnInit(){
+    this.loadBasket();
+    this.loadCurrentUser();
+  }
+
+  loadCurrentUser()
+  {
+    const token = localStorage.getItem('token');
+    this.accountService.loadCurrentUser(token).subscribe(() => {
+        console.log('loaded user');
+
+      }, error => {
+        console.log(error);
     })
+  }
+
+
+  loadBasket()
+  {
+    const baskedId = localStorage.getItem('basket_id');
+    console.log(baskedId);
+    if(baskedId)
+    {
+      this.basketService.getBasket(baskedId).subscribe(() => {
+        console.log('Initialized basket');
+      }, error => {
+        console.log(error);
+      });
+    }
   }
 }
